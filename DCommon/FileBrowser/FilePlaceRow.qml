@@ -21,6 +21,12 @@ StyledButton {
     property bool selected: false
     property bool expandable: false
     property bool expanded: false
+    property bool isFirstInGroup: true
+    property bool isLastInGroup: true
+    property bool isHiddenPlace: false
+
+    readonly property real topRadius: isFirstInGroup ? Style.groupedListOuterRadius : Style.groupedListInnerRadius
+    readonly property real bottomRadius: isLastInGroup ? Style.groupedListOuterRadius : Style.groupedListInnerRadius
 
     property string dropPath: ""
     property bool springLoad: true
@@ -41,7 +47,13 @@ StyledButton {
     focusPolicy: Qt.TabFocus
     width: parent?.width ?? 0
     implicitHeight: Math.max(FileBrowserMetrics.sidebarRowHeight, labels.implicitHeight + Style.spacingM)
-    radius: FileBrowserMetrics.sidebarRowRadius
+    topLeftRadius: topRadius
+    topRightRadius: topRadius
+    bottomLeftRadius: bottomRadius
+    bottomRightRadius: bottomRadius
+    opacity: isHiddenPlace ? 0.45 : 1
+    border.width: Style.layerOutlineWidth
+    border.color: Style.outlineMedium
     color: dropZone.containsDrag ? Style.primaryContainer : selected ? Style.selectedContainer : "transparent"
     Accessible.name: label
     Accessible.description: tooltipText

@@ -9,9 +9,11 @@ Row {
 
     property bool backEnabled: false
     property bool forwardEnabled: false
+    property bool upEnabled: false
 
     signal backRequested
     signal forwardRequested
+    signal upRequested
 
     spacing: FileBrowserMetrics.navPairGap
     LayoutMirroring.enabled: I18n.isRtl
@@ -21,20 +23,24 @@ Row {
         id: segment
 
         focusPolicy: Qt.TabFocus
-        required property bool leading
+        property int position: 0 // 0: leading, 1: middle, 2: trailing
         property string iconName: ""
         property string tooltipText: ""
         readonly property real outerRadius: Style.fullRadius(FileBrowserMetrics.navPairSegmentWidth, FileBrowserMetrics.controlSize)
-        readonly property real startRadius: leading ? outerRadius : FileBrowserMetrics.navPairInnerRadius
-        readonly property real endRadius: leading ? FileBrowserMetrics.navPairInnerRadius : outerRadius
+        readonly property real innerRadius: FileBrowserMetrics.navPairInnerRadius
+
+        readonly property real leftRad: position === 0 ? outerRadius : innerRadius
+        readonly property real rightRad: position === (pair.upEnabled !== undefined ? 2 : 1) ? outerRadius : innerRadius
 
         width: FileBrowserMetrics.navPairSegmentWidth
         height: FileBrowserMetrics.controlSize
         color: enabled ? Style.chipSurface : Style.onSurface_12
-        topLeftRadius: mirrored ? endRadius : startRadius
-        bottomLeftRadius: mirrored ? endRadius : startRadius
-        topRightRadius: mirrored ? startRadius : endRadius
-        bottomRightRadius: mirrored ? startRadius : endRadius
+        border.width: Style.layerOutlineWidth
+        border.color: Style.outlineMedium
+        topLeftRadius: mirrored ? rightRad : leftRad
+        bottomLeftRadius: mirrored ? rightRad : leftRad
+        topRightRadius: mirrored ? leftRad : rightRad
+        bottomRightRadius: mirrored ? leftRad : rightRad
         Accessible.name: tooltipText
 
         StateLayer {
@@ -58,7 +64,7 @@ Row {
     }
 
     Segment {
-        leading: true
+        position: 0
         enabled: pair.backEnabled
         iconName: I18n.isRtl ? "arrow_forward" : "arrow_back"
         tooltipText: I18n.tr("Back", "tooltip on the button going to the previous location")
@@ -66,10 +72,18 @@ Row {
     }
 
     Segment {
-        leading: false
+        position: pair.upRequested !== undefined ? 1 : 2
         enabled: pair.forwardEnabled
         iconName: I18n.isRtl ? "arrow_back" : "arrow_forward"
         tooltipText: I18n.tr("Forward", "tooltip on the button going to the next location")
         onClicked: pair.forwardRequested()
+    }
+
+    Segment {
+        position: 2
+        enabled: pair.upEnabled
+        iconName: "arrow_upward"
+        tooltipText: I18n.tr("Go to the parent folder", "keyboard shortcut")
+        onClicked: pair.upRequested()
     }
 }

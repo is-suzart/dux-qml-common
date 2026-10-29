@@ -93,7 +93,7 @@ Popup {
             level: Style.elevationLevel2
             fallbackOffset: Style.spacingXS
             targetRadius: Style.cornerRadiusL
-            targetColor: Style.surfaceContainer
+            targetColor: Style.floatingSurface
             borderColor: Style.outlineMedium
             borderWidth: Style.layerOutlineWidth
             shadowEnabled: Style.elevationEnabled && Style.popoutElevationEnabled

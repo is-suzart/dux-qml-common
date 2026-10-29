@@ -1,6 +1,7 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import Quickshell.Widgets
 import qs.DCommon.Common
 import qs.DCommon.Widgets
 
@@ -74,14 +75,20 @@ Item {
     Loader {
         anchors.fill: parent
         active: root.thumbnail !== ""
-        sourceComponent: Image {
-            source: FilePaths.toFileUrl(root.thumbnail)
-            sourceSize.width: root.rasterSize
-            sourceSize.height: root.rasterSize
-            fillMode: Image.PreserveAspectFit
-            asynchronous: root.asynchronous
-            cache: true
-            smooth: true
+        sourceComponent: ClippingRectangle {
+            radius: Style.cornerRadiusS
+            color: "transparent"
+
+            Image {
+                anchors.fill: parent
+                source: FilePaths.toFileUrl(root.thumbnail)
+                sourceSize.width: root.rasterSize
+                sourceSize.height: root.rasterSize
+                fillMode: Image.PreserveAspectFit
+                asynchronous: root.asynchronous
+                cache: true
+                smooth: true
+            }
         }
     }
 
